@@ -1,0 +1,19 @@
+---
+- name: Install ftp and start service
+  hosts: all
+  remote_user: devops
+  become: true
+  tasks:
+   - name: Install ftp
+     yum:
+      name: vsftpd
+      state: latest
+
+   - name: Copy text to destination
+     copy: dest="/var/www/html/welcome.txt" content="Welcome to ftp server"
+
+   - name: Start ftp
+     service:
+      name: vsftpd
+      state: started
+      enabled: true
