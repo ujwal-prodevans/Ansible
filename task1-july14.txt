@@ -1,0 +1,27 @@
+---
+- name: Install httpd service and write index.html file
+  hosts: all
+  remote_user: devops
+  become: true
+
+  tasks:
+   - name: Install apache
+     yum:
+      name: httpd
+      state: latest
+
+   - name: Create index.html
+     template:
+      src: /home/devops/playbook/index.html.j2
+      dest: /var/www/html/index.html
+
+   - name: Create configuration file
+     template:
+      src: /home/devops/playbook/httpd.conf.j2
+      dest: /etc/httpd/conf/{{ ansible_hostname}}.conf
+
+   - name: Start apache service
+     service:
+      name: httpd
+      state: started
+      enabled: true
