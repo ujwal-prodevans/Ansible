@@ -1,0 +1,41 @@
+---
+
+- hosts: web
+
+  vars_prompt:
+
+   - name: user_name
+
+     prompt: Enter the username
+
+     private: no
+
+   - name: passwd
+
+     prompt: Enter the password
+
+     sudo: yes
+
+
+
+  tasks:
+
+   - user:
+
+       name: "{{ user_name }}"
+
+       password: "{{ passwd | password_hash('sha512') }}"
+
+   - name: Allow wheel group to have passwordless sudo
+
+     lineinfile:
+
+       dest: /etc/sudoers.d/{{ user_name }}
+
+       state: present
+
+       create: yes
+
+       # state: present
+
+       line: "{{ user_name }} ALL=(ALL) NOPASSWD: ALL"
